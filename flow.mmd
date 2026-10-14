@@ -1,0 +1,60 @@
+flowchart TD
+  GOAL["目标: 90天 OCR 合格曝光冲到 500K<br/>合格曝光=Premium系用户主TL看到且帖面≥50%进屏<br/>回复曝光不算 · 插件读不到须你手填"]
+  GOAL --> GATE0{"你: 开工前OCR地理自核过了吗?<br/>收款/注册地港台可用 · 大陆不可"}
+  GATE0 -->|未过/大陆| STOP0["你: 停OCR冲目标, 先改收款注册地<br/>未过核前不跑采集与出稿冲量"]
+  GATE0 -->|已过| TEAM["四Bot小队协同 Asia/Shanghai<br/>落盘: GitHub Sunjiaqiang-01/X 为流程图真相源<br/>业务库: vault/wiki/X运营/ 已采库·草稿箱·复盘样本<br/>前置: 已授权X插件拉帖与diff"]
+
+  TEAM --> BASE["底线闸 全Bot强制<br/>不自动发帖·不自动回评·不批量互关·不纯搬运<br/>涉政不聊不采不出稿 · 只学已挂上且无疑义的已发<br/>保持Premium · 已验证粉≥500你后台瞄<br/>日有效入选上限40 丢弃不计额度<br/>主题/想法无配额 · 待审草稿硬闸见下"]
+
+  TEAM --> SCOUT["热点侦察Bot<br/>谁触发: Grok Bot定时 Routines<br/>cron: 5 10-22 * * * 上海时区<br/>23:00–10:00夜间停采 · 每小时只扫增量"]
+  TEAM --> WRITER["二创写手Bot<br/>谁触发: Routines同窗每小时扫箱<br/>或草稿箱有新高优先卡时即时<br/>OCR原创: 相对来源加观点重写<br/>禁微改/合集搬运/求赞求关 · 不自动发"]
+  TEAM --> IDEAS["想法合伙人Bot<br/>谁触发: 你丢想法时即时<br/>想法入口无日配额"]
+  TEAM --> RETRO["日复盘改进Bot<br/>谁触发: Routines 每天23:30<br/>周日加深档仍可集中改Skill<br/>Skill文件在仓库/Skill目录 · 你确认后才生效 · 可回滚"]
+
+  SCOUT --> WIN{"侦察Bot: 是否在10:00–23:00窗内?"}
+  WIN -->|否| SKIP["侦察Bot: 本小时停采"]
+  WIN -->|是| CAP{"侦察Bot: 今日有效入选选题卡 < 40?<br/>仅入选计额度 · 广告涉政丢弃不计"}
+  CAP -->|否| SKIP2["侦察Bot: 达日有效上限, 今日不再采"]
+  CAP -->|是| PULL["侦察Bot: 用X搜中文高赞转评近似热帖<br/>非真涨速 · 字段正文/作者/帖ID/链接/赞转评/时间<br/>首次见到写已采库 此时不扣额度"]
+  PULL --> DEDUP{"侦察Bot: 近14天已采过?<br/>帖ID优先否则去追踪参数链接"}
+  DEDUP -->|已采| SKIPD["侦察Bot: 跳过 · 不计额度"]
+  DEDUP -->|未采| ADS{"侦察Bot: 像纯广告/搬运?<br/>启发式指纹 · 非硬分类器"}
+  ADS -->|是| SKIPA["侦察Bot: 丢弃写已采库防再扫 · 不计额度"]
+  ADS -->|否| POL{"侦察Bot: 涉政/政治敏感?"}
+  POL -->|可疑| POLH{"你: 快核是否误杀?"}
+  POLH -->|误杀放行| WATER
+  POLH -->|确认涉政| SKIPP["侦察Bot: 丢弃不采不出稿写已采库 · 不计额度"]
+  POL -->|明确否| WATER{"侦察Bot: 偏浇水/互关灌水?"}
+  WATER -->|是| DEMOTE["侦察Bot: 选题卡标低优先"]
+  WATER -->|否| CARD["侦察Bot或想法Bot: 写选题卡→草稿箱<br/>字段: 主题/来源帖ID链接可空/角度/优先级/是否浇水/入库时间<br/>有效入选成功写卡时扣1点日额度"]
+  DEMOTE --> CARD
+
+  IDEAS --> IDEA["你: 把想法丢给想法合伙人Bot"]
+  IDEA --> CARD
+
+  CARD --> QUEUE{"写手Bot: 待审草稿数 < 10?"}
+  QUEUE -->|否| PAUSE["写手Bot: 停出新稿 · 等你审掉积压"]
+  QUEUE -->|是| WRITER
+  WRITER --> DRAFT["写手Bot: 按Skill出草稿v0<br/>自检清单: 相对来源改写幅度够? 有新观点? 无求互动?<br/>有来源帖时对照原文 · 无来源则标想法卡"]
+  DRAFT --> HUMAN["你人审: 改稿 / 通过 / 拒绝"]
+  HUMAN -->|改稿| EDIT["你改完或写手按批注出v1 · 最多2轮后退回/拒绝"]
+  EDIT --> DRAFT
+  HUMAN -->|拒| REJ["你/写手: 打拒绝标签入库<br/>标签供周日加深: 何类不该写"]
+  HUMAN -->|过| POST["你: 在X手动发出终稿 · 发完即完不写回链接"]
+  POST --> REPLY["你: 自己回评 · 无互动草稿Bot"]
+  POST --> WAIT["系统: 草稿标已通过待对账"]
+
+  WAIT --> RETRO
+  REJ --> RETRO
+  RETRO --> MATCH["复盘Bot: 拉你当日新发帖挂草稿<br/>规则: 发帖时间窗±2h内 · 正文相似度≥阈值才挂<br/>多候选取时间最近再取相似度最高<br/>歧义或低于阈值: 不学 · 留待对账或你丢一句发了"]
+  MATCH --> DAY["复盘Bot: 日报告过审率/Top/扑街<br/>短期代理指标=赞+转+评 · 有你手填OCR后以OCR为主<br/>汇总已挂上diff学改法"]
+  RETRO --> CLEAN["复盘Bot: 清vault子目录<br/>已采14天·未发草稿7天归档·原始JSON3天·日报告90天<br/>样本近30天Top50+扑街50"]
+  DAY --> OCR["你: 手填今日OCR进度 · 瞄Premium与已验证粉"]
+  OCR --> TOP["复盘Bot: 记Top扑街+拒绝标签+你的改法"]
+  TOP --> QUOTA["复盘Bot: 可建议改明日有效入选上限<br/>待审≥10继续停写手"]
+  QUOTA --> SKILL{"复盘Bot: 今日改Skill? 最多1处<br/>周日加深可集中 · 须你确认生效"}
+  SKILL -->|是| UPD["你确认后更新Skill · 只学已挂上无疑义样本<br/>周日加深必吃拒绝标签"]
+  SKILL -->|否| OBS["复盘Bot: 只留观察不改Skill"]
+  UPD --> TEAM
+  OBS --> TEAM
+  BASE -.-> TEAM

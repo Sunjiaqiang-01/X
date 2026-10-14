@@ -2,7 +2,9 @@
 
 > @QiangJia39245 · 90 天 OCR 500K · Asia/Shanghai · v1.1（必须先修合入）
 
-打开本页即可看图；改本 README / `流程图.md` 后合并进 `main`，刷新浏览器就更新。
+**推荐在浏览器看全图（自适应缩放）：** [GitHub Pages 预览](https://sunjiaqiang-01.github.io/X/)
+
+仓库 README 里的 Mermaid 受 GitHub 高度限制可能显示不全；改 `flow.mmd` / `index.html` 后合并进 `main`，刷新 Pages 即更新（通常 1 分钟内）。
 
 备用静态预览：
 
